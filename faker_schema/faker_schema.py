@@ -1,3 +1,4 @@
+import re
 from faker import Faker
 
 
@@ -27,6 +28,11 @@ class FakerSchema(object):
                 data[k] = self._generate_one_fake(v)
             elif isinstance(v, list):
                 data[k] = [self._generate_one_fake(item) for item in v]
+            elif re.search(r'\((.*?)\)', v) is not None:
+                kwargs_list = [
+                    arg.split("=") for arg in re.search(r'\((.*?)\)', v).group(1).split(",")]
+                kwargs = {pair[0]: pair[1] for pair in kwargs_list}
+                data[k] = getattr(self._faker, v)(**kwargs)
             else:
                 data[k] = getattr(self._faker, v)()
         return data

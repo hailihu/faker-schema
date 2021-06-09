@@ -32,7 +32,7 @@ class FakerSchema(object):
                 kwargs_list = [
                     arg.split("=") for arg in re.search(r'\((.*?)\)', v).group(1).split(",")]
                 kwargs = {pair[0]: pair[1] for pair in kwargs_list}
-                data[k] = getattr(self._faker, v)(**kwargs)
+                data[k] = getattr(self._faker, v.split("(")[0])(**kwargs)
             else:
                 data[k] = getattr(self._faker, v)()
         return data
